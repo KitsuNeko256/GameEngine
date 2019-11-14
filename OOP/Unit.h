@@ -15,6 +15,3 @@ struct Unit {
 		name(_name), stat(tStat), skill(_skill) {}
 };
 
-
-//kkeeeeeekk
-//asdadasdas
