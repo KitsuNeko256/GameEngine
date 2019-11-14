@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков\Battle">
+      <UniqueIdentifier>{13ca89cf-c766-475d-90d9-d0ef1d938c47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Battle">
+      <UniqueIdentifier>{78d49289-e534-4685-86e0-d4ff78c0c8a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\World">
+      <UniqueIdentifier>{8d599d33-7d73-49b8-8f52-f4e29185e282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\World">
+      <UniqueIdentifier>{3ee646c7-365d-496f-8ca6-15640ce993e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Common">
+      <UniqueIdentifier>{8e38c7ce-6044-46ff-be30-db33e6c6f678}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Data">
+      <UniqueIdentifier>{845f65ec-240e-4d97-b635-08b9bfcb892a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Data">
+      <UniqueIdentifier>{f0e12392-1432-469a-8c96-836aa6b73595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы заголовков\Fight Mechanics">
+      <UniqueIdentifier>{f0f5a89f-1bb2-41da-9667-3619526f7861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\Fight Mechanics">
+      <UniqueIdentifier>{0d2ced59-dd8a-4521-99a2-00f0457f110b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Battle.cpp">
+      <Filter>Исходные файлы\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleArmy.cpp">
+      <Filter>Исходные файлы\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="BattleUnitStack.cpp">
+      <Filter>Исходные файлы\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitStack.cpp">
+      <Filter>Исходные файлы\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Army.cpp">
+      <Filter>Исходные файлы\World</Filter>
+    </ClCompile>
+    <ClCompile Include="Data.cpp">
+      <Filter>Исходные файлы\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitStatFormula.cpp">
+      <Filter>Исходные файлы\Fight Mechanics</Filter>
+    </ClCompile>
+    <ClCompile Include="Constants.cpp">
+      <Filter>Исходные файлы\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="DataTemplate.cpp">
+      <Filter>Исходные файлы\Data</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Battle.h">
+      <Filter>Файлы заголовков\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleArmy.h">
+      <Filter>Файлы заголовков\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="BattleUnitStack.h">
+      <Filter>Файлы заголовков\Battle</Filter>
+    </ClInclude>
+    <ClInclude Include="Army.h">
+      <Filter>Файлы заголовков\World</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitStack.h">
+      <Filter>Файлы заголовков\World</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Файлы заголовков\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="StatusEffect.h">
+      <Filter>Файлы заголовков\Fight Mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitStatFormula.h">
+      <Filter>Файлы заголовков\Fight Mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitStatModifier.h">
+      <Filter>Файлы заголовков\Fight Mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="Printer.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitStat.h">
+      <Filter>Файлы заголовков\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Unit.h">
+      <Filter>Файлы заголовков\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>Файлы заголовков\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="DataTemplate.h">
+      <Filter>Файлы заголовков\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitSkill.h">
+      <Filter>Файлы заголовков\Fight Mechanics</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Файлы заголовков\Data</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

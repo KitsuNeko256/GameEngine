@@ -1,0 +1,6 @@
+Armor_Break 2000
+1
+Defence * 0.5 #
+Physical_Attack 1000
+1
+HP - 1 + 0.05 * ( u.Attack - t.Defence ) #

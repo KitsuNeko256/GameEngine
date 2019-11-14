@@ -1,0 +1,6 @@
+Physical_Attack
+1
+Physical_Attack t 0
+Armor_Break
+1
+Armor_Break t 3
