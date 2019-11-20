@@ -1,6 +1,13 @@
+Physical_Attack 1000
+2
+HP - u.Damage * ( 1 + 0.05 * ( u.Attack - t.Defence ) ) #
+HP - u.Damage / ( 1 + 0.05 * ( t.Defence - u.Attack ) ) #
+Heal 1000
+1
+HP + u.Damage / 3 #
+Defence_Stance 1500
+1
+Defence * 1.5 #
 Armor_Break 2000
 1
 Defence * 0.5 #
-Physical_Attack 1000
-1
-HP - 1 + 0.05 * ( u.Attack - t.Defence ) #

@@ -4,25 +4,40 @@
 
 
 class StatusEffect {
-private:
-	uint16_t duration;
-
 public:
-	const std::string name;
-	const uint16_t priority;
-
-	struct Effect{
+	struct Effect {
 		uint16_t statID;
 		char action;
 		float value;
 
 		Effect(uint16_t _statID, char _action, float _value) :
 			statID(_statID), action(_action), value(_value) {}
+		Effect& operator=(const Effect& t) = default;
 	};
-	const std::vector<Effect> effect;
+private:
+	std::string name;
+	uint16_t priority;
+	uint16_t duration;
 
+	std::vector<Effect> effect;
+
+public:
 	StatusEffect(const std::string& _name, const uint16_t _priority, uint16_t _duration, const std::vector<Effect>& _effect) :
-		name(_name), priority(_priority), duration(_duration), effect(_effect) { }
+		name(_name), priority(_priority), duration(_duration), effect(_effect) { }	
+
+	std::string getName() const {
+		return name;
+	}
+	uint16_t getPriority() const {
+		return priority;
+	}
+	std::vector<Effect> getEffect() const {
+		return effect;
+	}
+
+	bool operator<(const StatusEffect& right) const {
+		return priority < right.priority;
+	}
 
 	bool ended() const {
 		return !duration;
@@ -37,8 +52,5 @@ public:
 		duration += shift;
 	}
 };
-
-
-
 
 

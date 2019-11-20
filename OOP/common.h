@@ -2,6 +2,7 @@
 
 #include <random>
 
+
 inline int max(int l, int r) {
 	return l > r ? l : r;
 }
@@ -31,4 +32,9 @@ inline void removeUnderscore(std::string& str) {
 	for (size_t i = 0; i < str.size(); ++i)
 		if (str[i] == '_')
 			str[i] = ' ';
+}
+inline void toLowerCase(std::string& str){
+	for (size_t i = 0; i < str.size(); ++i)
+		if ('A' <= str[i] && str[i] <= 'Z')
+			str[i] += 'a' - 'A';
 }

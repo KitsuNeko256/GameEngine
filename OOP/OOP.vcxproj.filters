@@ -72,6 +72,9 @@
     <ClCompile Include="DataTemplate.cpp">
       <Filter>Исходные файлы\Data</Filter>
     </ClCompile>
+    <ClCompile Include="UnitStat.cpp">
+      <Filter>Исходные файлы\World</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Battle.h">

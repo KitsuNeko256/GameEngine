@@ -1,6 +1,12 @@
 Physical_Attack
 1
 Physical_Attack t 0
+Heal
+1
+Heal t 0
+Defence_Stance
+1
+Defence_Stance u 1
 Armor_Break
 1
 Armor_Break t 3

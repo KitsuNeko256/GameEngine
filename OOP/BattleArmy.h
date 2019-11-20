@@ -9,11 +9,13 @@
 
 class BattleArmy {
 private:
+	uint16_t armyID;
+
 	std::vector<BattleUnitStack> stack;
 	std::vector<BattleUnitStack> grave;
 
 public:
-	BattleArmy(const Army& army);
+	BattleArmy(const Army& army, uint16_t _armyID);
 
 	int getSize() const{
 		return stack.size();
@@ -32,6 +34,6 @@ public:
 	}
 
 	void addStack(BattleUnitStack& _stack);
-	void killStack(uint8_t n);
-	void reviveStack(uint8_t n);
+	void killStack(uint16_t n);
+	void reviveStack(uint16_t n);
 };

@@ -9,45 +9,64 @@
 class BattleUnitStack {
 private:
 	const Unit* base;
-	
-	std::vector<float> stat;
+
+	UnitStatList stat;
 
 	int maxSize;
-	int curSize;
+	int size;
 
-	std::multimap<uint16_t, StatusEffect> status;
+	std::vector<StatusEffect> status;
 
-	uint32_t waitStart;
+	uint16_t army;
+
 	uint32_t waitEnd;
+	uint16_t waitInitiative;
 
 public:
 	BattleUnitStack() {}
-	BattleUnitStack(const UnitStack& t);
+	BattleUnitStack(const UnitStack& t, uint16_t _army, uint64_t timer = 0);
 
-	const std::vector<float>& getStatVector() const {
-		return stat;
-	}
-	float getStat(uint8_t number) const {
-		return stat[number];
-	}
-		
 	std::string getName() const {
 		return base->name;
 	}
+	const Unit* getBase() const {
+		return base;
+	}
+	uint16_t getArmy() const {
+		return army;
+	}
+	uint64_t getWaitEnd() const {
+		return waitEnd;
+	}
 	int getSize() const {
-		return curSize;
+		return size;
 	}
 	int getMaxSize() const {
 		return maxSize;
 	}
+	const UnitStatList& getStatList() const{
+		return stat;
+	}
+	int getStat(uint16_t n) const {
+		return stat.get(n);
+	}
+	const std::vector<StatusEffect>& getStatus() const {
+		return status;
+	}
 
-	
-	void setStat(uint8_t number, float value);
-	void shiftStat(uint8_t number, float value);
+	bool isDead() const {
+		return size == 0;
+	}
+
+	void wait();
+	void updateTimer(uint64_t timer);
+	void updateHP();
 	void recountStats();
+	void startTurn();
+	void endTurn();
 
 	void applyStatusEffect(StatusEffect&& effect);
-	void useSkill(uint8_t skillNumber, BattleUnitStack& target);
+	void useSkill(uint16_t skillNumber, BattleUnitStack& target);
 	
 };
 

@@ -1,6 +1,5 @@
-HP 1 100000
-Attack 1 100000
-Defence 1 100000
-Min_Damage 1 100000
-Max_Damage 1 100000
-Initiative 1 100000
+Attack s 1 100000
+Defence s 1 100000
+Initiative s 1 100000
+HP v 1 100000
+Damage r 1 100000

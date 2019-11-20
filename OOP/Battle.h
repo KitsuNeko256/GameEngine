@@ -4,22 +4,24 @@
 
 class Battle {
 private:
-	std::vector <BattleArmy> army;
-	std::vector <BattleUnitStack*> unitOrder;
+	std::vector<BattleArmy> army;
+	std::vector<BattleUnitStack*> unitOrder;
 	uint64_t battleTimer;
 
 public:
-	Battle(const std::vector<BattleArmy>& _army) :
-		army(_army) {};
+	Battle(const std::vector<BattleArmy>& _army);
 
 	size_t getArmySize() const {
 		return army.size();
 	}
-	const BattleArmy& getArmy(uint8_t number) const {
+	BattleArmy& getArmy(uint16_t number) {
 		return army[number];
 	}
 
-	BattleUnitStack* getTurn() {
+	uint16_t getTurnArmy() {
+		return unitOrder[0]->getArmy();
+	}
+	BattleUnitStack* getTurnUnit() {
 		return unitOrder[0];
 	}
 	std::vector <BattleUnitStack*> getTurnOrder() {
@@ -27,10 +29,11 @@ public:
 	}
 	std::string getStatus() const;
 
-	
-	
 	void unitAction(std::string& action);
+	void armySurrender();
 
+	void startTurn();
+	void endTurn();
 };
 
 

@@ -3,7 +3,7 @@
 #include <stack>
 #include <string>
 
-float UnitStatFormula::count(const std::vector<float>& user, const std::vector<float>& target) const {
+float UnitStatFormula::count(const UnitStatList& user, const UnitStatList& target) const {
 	std::stack<float> val;
 	for (uint16_t i = 0; i < expr.size(); ++i) {
 		const char& c = expr[i][0];
@@ -11,9 +11,9 @@ float UnitStatFormula::count(const std::vector<float>& user, const std::vector<f
 			val.push(std::stof(expr[i]));
 		else if ('a' <= c && c <= 'z'){
 			if (c == 'u')
-				val.push(user[std::stoi(expr[i].substr(2))]);
+				val.push(user.get(std::stoi(expr[i].substr(2))));
 			else if (c == 't')
-				val.push(target[std::stoi(expr[i].substr(2))]);
+				val.push(target.get(std::stoi(expr[i].substr(2))));
 		}
 		else {
 			float b = val.top();
