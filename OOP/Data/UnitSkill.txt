@@ -1,12 +1,54 @@
-Physical_Attack
-1
+Wait u
+[EFFECT]
+Wait u 0 
+[END]
+
+Melee_Attack s
+[TRAIT]
+Melee
+[EFFECT]
 Physical_Attack t 0
-Heal
-1
+[END]
+
+Ranged_Attack s
+[TRAIT]
+Ranged
+[EFFECT]
+Physical_Attack t 0
+[END]
+
+Heal s
+[EFFECT]
 Heal t 0
-Defence_Stance
-1
+[END]
+
+Defence_Stance u
+[EFFECT]
 Defence_Stance u 1
-Armor_Break
-1
+[END]
+
+Armor_Break s
+[EFFECT]
 Armor_Break t 3
+[END]
+
+Freeze s
+[EFFECT]
+Freeze t 0
+[END]
+
+Poison s
+[EFFECT]
+Poison t 5
+[END]
+
+Slow s
+[EFFECT]
+Slow t 3
+[END]
+
+Retaliate s
+[EFFECT]
+Retaliate t 0
+Reduce_Retaliate_Count u 0
+[END]

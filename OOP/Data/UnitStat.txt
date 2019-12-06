@@ -1,5 +1,8 @@
-Attack s 1 100000
-Defence s 1 100000
-Initiative s 1 100000
-HP v 1 100000
-Damage r 1 100000
+Attack s 1 100000 1
+Defence s 1 100000 1
+Initiative s 1 100000 1
+Health v 1 100000 1
+Damage r 1 100000 1
+Number v 1 100000 1
+Retaliate_Count v 0 1000 1
+Wait s -1000000 1000000 0

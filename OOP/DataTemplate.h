@@ -10,17 +10,17 @@ template<class T>
 class DataTemplate {
 protected:
 	std::vector<T> val;
-	std::map<std::string, uint16_t> index;
+	std::map<std::string, size_t> index;
 
 public:
-	const T& operator[](uint16_t index) const {
+	const T& operator[](size_t index) const {
 		return val[index];
 	}
 	const T& operator[](const std::string& name) const{
 		return val[index[name]];
 	}
 
-	uint16_t getIndex(const std::string& name) const {
+	size_t getIndex(const std::string& name) const {
 		return index.find(name) == index.end() ? 0 : index.at(name);
 	}
 	size_t getSize() const {
@@ -30,16 +30,35 @@ public:
 	T loadSingleInstance(std::ifstream& fin);
 	void loadFromFile(const std::string& fileName) {
 		std::ifstream fin(fileName);
-		
-		uint16_t IDCounter = getSize();
-		while(!fin.eof()) {
-			T t = loadSingleInstance(fin);
-			val.emplace_back(t);
-			index[t.name] = IDCounter;
-			++IDCounter;
+		if (fin.good()) {
+			size_t IDCounter = getSize();
+			while (!fin.eof()) {
+				T t = loadSingleInstance(fin);
+				val.emplace_back(t);
+				index[t.name] = IDCounter++;
+			}
 		}
-
 		fin.close();
 	}
 };
 
+/*
+ifstream file("input.txt");
+if (file.good())
+{
+	string str;
+	file >> str;
+	while (getline(file, str))
+	{
+		if(str == "")
+			continue;
+		istringstream ss(str);
+		std::string input;
+		while (ss >> input)
+		{
+			cout << input << " ";
+		}
+		cout << endl;
+	}
+}
+*/

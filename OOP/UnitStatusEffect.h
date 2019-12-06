@@ -2,7 +2,6 @@
 
 #include "UnitStatModifier.h"
 
-
 class StatusEffect {
 public:
 	struct Effect {
@@ -35,21 +34,21 @@ public:
 		return effect;
 	}
 
-	bool operator<(const StatusEffect& right) const {
-		return priority < right.priority;
-	}
-
-	bool ended() const {
-		return !duration;
-	}
 	uint16_t getDuration() const {
 		return duration;
+	}
+	bool ended() const {
+		return !duration;
 	}
 	void setDuration(uint16_t _duration) {
 		duration = _duration;
 	}
 	void shiftDuration(uint16_t shift) {
 		duration += shift;
+	}
+
+	bool operator<(const StatusEffect& right) const {
+		return priority < right.priority;
 	}
 };
 

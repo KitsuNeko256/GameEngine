@@ -6,33 +6,6 @@
 #include <string>
 
 
-
-std::string print(const UnitStatFormula& t) {
-	std::string ans = std::to_string(t.stat) + " ";
-	ans += t.action;
-	ans += " :";
-	for (uint16_t i = 0; i < t.expr.size(); ++i)
-		ans += " " + t.expr[i];
-	return ans;
-}
-std::string print(const UnitStatModifier& t) {
-	std::string ans = "ID: " + std::to_string(Data::get()->unitStatModifier.getIndex(t.name)) +
-		" Name: " + t.name + " Prioirity: " + std::to_string(t.priority) + "\n";
-	for (uint16_t i = 0; i < t.effect.size(); ++i)
-		ans += print(t.effect[i]) + "\n";
-	return ans;
-}
-std::string print(const UnitSkill& t) {
-	std::string ans = "ID: " + std::to_string(Data::get()->unitSkill.getIndex(t.name)) +
-		" Name: " + t.name + "\n";
-	for (uint16_t i = 0; i < t.effect.size(); ++i) {
-		ans += "ID: " + std::to_string(t.effect[i].ID) +
-			" Target: " + t.effect[i].target +
-			" Duration: " + std::to_string((int)t.effect[i].duration) + "\n";
-	}
-	return ans;
-}
-
 std::string print(const UnitStat& t) {
 	std::string ans = "ID: " + std::to_string(Data::get()->unitStat.getIndex(t.name)) +
 		" Name: " + t.name + " Type: ";
@@ -53,6 +26,34 @@ std::string print(const UnitStatList& t) {
 	return ans;
 }
 
+/*
+std::string print(const UnitStatFormula& t) {
+	std::string ans = std::to_string(t.stat) + " ";
+	ans += t.action;
+	ans += " :";
+	for (uint16_t i = 0; i < t.expr.size(); ++i)
+		ans += " " + t.expr[i];
+	return ans;
+}
+*/
+std::string print(const UnitStatModifier& t) {
+	std::string ans = "ID: " + std::to_string(Data::get()->unitStatModifier.getIndex(t.name)) +
+		" Name: " + t.name + " Prioirity: " + std::to_string(t.priority) + "\n";
+//	for (uint16_t i = 0; i < t.effect.size(); ++i)
+//		ans += print(t.effect[i]) + "\n";
+	return ans;
+}
+std::string print(const UnitSkill& t) {
+	std::string ans = "ID: " + std::to_string(Data::get()->unitSkill.getIndex(t.name)) +
+		" Name: " + t.name + "\n";
+	for (uint16_t i = 0; i < t.effect.size(); ++i) {
+		ans += "ID: " + std::to_string(t.effect[i].ID) +
+			" Target: " + t.effect[i].target +
+			" Duration: " + std::to_string((int)t.effect[i].duration) + "\n";
+	}
+	return ans;
+}
+
 std::string print(const Unit& t) {
 	std::string ans = "ID: " + std::to_string(Data::get()->unit.getIndex(t.name)) + 
 		" Name: " + t.name + "\n";
@@ -62,7 +63,6 @@ std::string print(const Unit& t) {
 		ans += " " + Data::get()->unitSkill[t.skill[i]].name + ";";
 	return ans + "\n";
 }
-
 std::string print(const UnitStack& t) {
 	return Data::get()->unit[t.getType()].name + " " + std::to_string(t.getNumber());
 }
@@ -75,9 +75,7 @@ std::string print(const Army& t) {
 
 
 std::string print(const BattleUnitStack& t) {
-	std::string ans = t.getName() +
-		" Size: " + std::to_string(t.getSize()) + 
-		"/" + std::to_string(t.getMaxSize()) + "\n";
+	std::string ans = t.getName() + "\n";
 	ans += print(t.getStatList());
 	ans += "Status:\n";
 	const std::vector<StatusEffect>& status = t.getStatus();
@@ -88,7 +86,7 @@ std::string print(const BattleUnitStack& t) {
 std::string print(const BattleArmy& t) {
 	std::string ans;
 	for (uint16_t i = 0; i < t.getSize(); ++i)
-		ans += std::to_string(i) + ": " + t.getConstStack(i).getName() + " " + std::to_string(t.getConstStack(i).getSize()) + "\n";
+		ans += std::to_string(i) + ": " + t.getConstStack(i).getName() + " " + std::to_string(t.getConstStack(i).getNumber()) + "\n";
 	return ans;
 }
 std::string print(Battle& t) {
@@ -98,6 +96,14 @@ std::string print(Battle& t) {
 		print(t.getArmy(i)) + "\n";
 	return ans;
 }
+std::string printTurnQueue(const Battle& t) {
+	std::string ans = "Turn order:\n";
+	std::vector<BattleUnitStack*> x = t.getTurnOrder();
+	for (uint16_t i = 0; i < x.size(); ++i)
+		ans += "P" + std::to_string(x[i]->getArmy()) + " " + x[i]->getName() + "\n";
+	return ans;
+}
+
 
 template<class T>
 std::string print(const DataTemplate<T>& t) {
@@ -114,3 +120,28 @@ std::string print(const UnitStatData& t) {
 	return ans;
 }
 
+
+
+
+void dataTestInfo() {
+
+	std::cout << "Unit Stat List:\n";
+	std::cout << print(Data::get()->unitStat);
+	std::cout << std::endl;
+	std::cout << "Unit Stat Modifier List:\n";
+	std::cout << print(Data::get()->unitStatModifier);
+	std::cout << std::endl;
+	std::cout << "Unit Skill List:\n";
+	std::cout << print(Data::get()->unitSkill);
+	std::cout << std::endl;
+
+	system("pause");
+	system("cls");
+
+	std::cout << "Unit list:\n";
+	std::cout << print(Data::get()->unit);
+	std::cout << std::endl;
+
+	system("pause");
+	system("cls");
+}

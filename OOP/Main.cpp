@@ -11,90 +11,49 @@
 #include "Constants.h"
 #include "Data.h"
 #include "Battle.h"
-#include "Printer.h"
-
-
-
-void testInfo(const Army& army1, const Army& army2) {
-
-	std::cout << "Unit Stat List:\n";
-	std::cout << print(Data::get()->unitStat);
-	std::cout << std::endl;
-	std::cout << "Unit Stat Modifier List:\n";
-	std::cout << print(Data::get()->unitStatModifier);
-	std::cout << std::endl;
-	std::cout << "Unit Skill List:\n";
-	std::cout << print(Data::get()->unitSkill);
-	std::cout << std::endl;
-
-	system("pause");
-	system("cls");
-
-	std::cout << "Unit list:\n";
-	std::cout << print(Data::get()->unit);
-	std::cout << std::endl;
-
-	system("pause");
-	system("cls");
-
-	std::cout << "Army 1:" << std::endl;
-	std::cout << print(army1) << std::endl;
-	std::cout << "Army 2:" << std::endl;
-	std::cout << print(army2) << std::endl;
-
-	system("pause");
-	system("cls");
-}
+#include "DebugPrinter.h"
+ 
 
 int main() {
 	srand((uint32_t)time(NULL));
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-	SetConsoleTextAttribute(hConsole, 11);
+//	SetConsoleTextAttribute(hConsole, 15);
+	SetConsoleTextAttribute(hConsole, 11 + 16 * 5);
 
 	Constants::get()->loadFromFile("Data\\Constants.txt");
 	Data::get()->unitStat.loadFromFile("Data\\UnitStat.txt");
-	Data::get()->unitStatModifier.loadFromFile("Data\\UnitStatModifier.txt");
+	Data::get()->unitStatModifier.loadFromFile(std::string("Data\\UnitStatModifier.txt"));
 	Data::get()->unitSkill.loadFromFile("Data\\UnitSkill.txt");
+	Data::get()->unitTrait.loadFromFile("Data\\UnitTrait.txt");
 	Data::get()->unit.loadFromFile("Data\\Unit.txt");
 
 	std::string input;
 	do {
 		system("cls");
 		std::cout << "Choose one option:\n";
-		std::cout << "(E)ditor:\n";
 		std::cout << "(T)esting:\n";
 		std::cout << "(Q)uit:\n";
 		std::cin >> input;
 		toLowerCase(input);
 		if (input == "q" || input == "quit")
 			break;	
-		else if (input == "e" || input == "editor") {
-			std::cout << "Add editor some day\n";
-//			std::cout << "Choose what to edit:\n";
-//			std::cout << "1. UnitStat\n";
-//			std::cout << "2. UnitStatModifier";
-//			std::cout << "3. "
-		}
 		else if (input == "t" || input == "testing") {
+			
 			Army army1 = Army(std::vector<UnitStack>{
 				UnitStack("Horned demon", 200),
-					UnitStack("Hell hound", 100),
-					UnitStack("Succubus", 50),
-					UnitStack("Hell charger", 20),
-					UnitStack("Pit fiend", 15),
-					UnitStack("Pit fiend", 15)
+				UnitStack("Hell hound", 100),
+				UnitStack("Succubus", 50),
+				UnitStack("Hell charger", 20),
+				UnitStack("Pit fiend", 15)
 			});
-
 			Army army2 = Army(std::vector<UnitStack> {
 				UnitStack("Imp", 100),
-					UnitStack("Devil", 50)
+				UnitStack("Devil", 50)
 			});
-
 			Battle battle = Battle(std::vector<BattleArmy>{
-				BattleArmy(army1, 0),
-					BattleArmy(army2, 1)
+				BattleArmy(army1, 0, battle.getTimer()),
+				BattleArmy(army2, 1, battle.getTimer())
 			});
-
 
 			while (true) {
 				system("cls");
@@ -102,82 +61,80 @@ int main() {
 					break;
 
 				std::cout << print(battle);
-
-				std::cout << "Turn order:\n";
-				std::vector<BattleUnitStack*> x = battle.getTurnOrder();
-				for (uint16_t i = 0; i < x.size(); ++i)
-					std::cout << "P" << x[i]->getArmy() << " " << x[i]->getName() << "\n";
+				std::cout << printTurnQueue(battle);
 				std::cout << std::endl;
 
-				std::cout << "Player " << battle.getTurnArmy() << " turn.\n";
 				BattleUnitStack* curUnit = battle.getTurnUnit();
+				std::cout << "Player " << curUnit->getArmy() << " turn.\n";
 				std::cout << "Current unit: " << curUnit->getName() << "\n\n";
 
-				std::cout << "Write your action (inspect, act, wait, surrender): \n";
+				if (curUnit->isFirstTurn()) {
+					const std::vector<uint16_t>& react = curUnit->getBase()->reaction.firstTurn;
+					for (uint16_t i = 0; i < react.size(); ++i) {
+						battle.unitAction(*curUnit, Data::get()->unitSkill[react[i]]);
+						std::cout << "Activated " << Data::get()->unitSkill[react[i]].name << " on it's first turn!\n";
+					}
+					curUnit->endFirstTurn();
+				}
+				{
+					const std::vector<uint16_t>& react = curUnit->getBase()->reaction.everyTurn;
+					for (uint16_t i = 0; i < react.size(); ++i) {
+						battle.unitAction(*curUnit, Data::get()->unitSkill[react[i]]);
+						std::cout << "Activated " << Data::get()->unitSkill[react[i]].name << " on it's turn!\n";
+					}
+				}
+
+				std::cout << "Write your action: \n";
+				const std::vector<size_t>& skillList = curUnit->getBase()->skill;
+				for (size_t i = 0; i < skillList.size(); ++i)
+					std::cout << i << ". " << Data::get()->unitSkill[skillList[i]].name << "\n";
+				std::cout << "i. Inspect\n";
+				std::cout << "s. Surrender\n";
 				std::string input;
 				std::cin >> input;
-				if (input == "inspect") {
+				toLowerCase(input);
 
+				if (input == "i" || input == "inspect") {
 					std::cout << "Choose target army number: ";
-					uint16_t targetArmy;
+					size_t targetArmy;
 					std::cin >> targetArmy;
 
 					std::cout << "Choose target number: ";
-					uint16_t targetNum;
+					size_t targetNum;
 					std::cin >> targetNum;
 
-					if (targetArmy < battle.getArmySize() && targetNum < battle.getArmy(targetArmy).getSize()) {
-						battle.getArmy(targetArmy).getStack(targetNum).recountStats();
+					if (targetArmy < battle.getArmySize() && targetNum < battle.getArmy(targetArmy).getSize())
 						std::cout << print(battle.getArmy(targetArmy).getConstStack(targetNum)) << "\n";
-					}
-					else std::cout << "Wrong input!\n";
-
-				}
-				else if (input == "act") {
-					std::cout << "Available actions: \n";
-					const std::vector<uint16_t>& skillList = curUnit->getBase()->skill;
-					for (uint16_t i = 0; i < skillList.size(); ++i)
-						std::cout << i << ". " << Data::get()->unitSkill[skillList[i]].name << "\n";
-
-					std::cout << "Choose action number: ";
-					uint16_t action;
-					std::cin >> action;
-
-					std::cout << "Choose target army number: ";
-					uint16_t targetArmy;
-					std::cin >> targetArmy;
-
-					std::cout << "Choose target number: ";
-					uint16_t targetNum;
-					std::cin >> targetNum;
-
-					if (action < skillList.size() && targetArmy < battle.getArmySize() && targetNum < battle.getArmy(targetArmy).getSize()) {
-						curUnit->recountStats();
-						curUnit->useSkill(action, battle.getArmy(targetArmy).getStack(targetNum));
-						curUnit->endTurn();
-						battle.endTurn();
-						battle.startTurn();
-					}
 					else std::cout << "Wrong input!\n";
 				}
-				else if (input == "wait") {
-					curUnit->wait();
-					battle.endTurn();
-					battle.startTurn();
-				}
-				else if (input == "surrender") {
+				else if (input == "s" || input == "surrender") {
 					battle.armySurrender();
 				}
-				else {
-					std::cout << std::endl;
-					std::cout << "Wrong input!\n";
+ 				else {
+					bool numFlag = true;
+					for (size_t i = 0; i < input.size(); ++i)
+						if (input[i] < '0' || '9' < input[i]) {
+							numFlag = false;
+							break;
+						}
+					if (numFlag) {
+						size_t action = stoi(input);
+						if (action < skillList.size()){
+							battle.unitAction(*curUnit, curUnit->getSkill(action));
+							curUnit->endTurn();
+							battle.endTurn();
+							battle.startTurn();
+						}
+						else std::cout << "Wrong input!\n";
+					}
+
+					else std::cout << "Wrong input!\n";	
 				}
 				system("pause");
 			}
 			std::cout << battle.getStatus() << "\n";
 			std::cout << "Battle results: \n";
 			std::cout << print(battle);
-			system("pause");
 		}
 		else std::cout << "Wrong input!\n";
 		system("pause");

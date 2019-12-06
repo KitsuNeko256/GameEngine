@@ -11,7 +11,7 @@ private:
 	uint64_t unitStackSize;
 	uint16_t armySize;
 	uint16_t battleArmySize;
-	uint16_t battleTimerTick;
+	uint64_t battleTimerTick;
 
 public:
 
@@ -29,7 +29,7 @@ public:
 	uint16_t BATTLE_ARMY_SIZE() const {
 		return battleArmySize;
 	}
-	uint16_t BATTLE_TIMER_TICK() const{
+	uint64_t BATTLE_TIMER_TICK() const{
 		return battleTimerTick;
 	}
 

@@ -4,69 +4,88 @@
 
 #include "UnitStack.h"
 #include "UnitSkill.h"
-#include "StatusEffect.h"
+#include "UnitStatusEffect.h"
+#include "Data.h"
 
 class BattleUnitStack {
 private:
 	const Unit* base;
+	size_t army;
 
 	UnitStatList stat;
-
-	int maxSize;
-	int size;
-
 	std::vector<StatusEffect> status;
 
-	uint16_t army;
+	const uint64_t& battleTimer;
+	int waitInitiative;
+	uint64_t waitEnd;
 
-	uint32_t waitEnd;
-	uint16_t waitInitiative;
+	bool firstTurn;
 
 public:
-	BattleUnitStack() {}
-	BattleUnitStack(const UnitStack& t, uint16_t _army, uint64_t timer = 0);
+//	BattleUnitStack() {}
+	BattleUnitStack(const UnitStack& t, size_t _army, const uint64_t& _battleTimer);
 
-	std::string getName() const {
-		return base->name;
-	}
+/////////////
+// GETTERS //
+/////////////
+
 	const Unit* getBase() const {
 		return base;
 	}
-	uint16_t getArmy() const {
+	std::string getName() const {
+		return base->name;
+	}
+	bool hasTrait(std::string traitName) const {
+		return base->hasTrait(traitName);
+	}
+	
+	size_t getArmy() const {
 		return army;
 	}
 	uint64_t getWaitEnd() const {
 		return waitEnd;
 	}
-	int getSize() const {
-		return size;
+	
+	bool isFirstTurn() const {
+		return firstTurn;
 	}
-	int getMaxSize() const {
-		return maxSize;
+	int getNumber() const {
+		return stat.get(Data::get()->unitStat.getIndex("Number"));
 	}
-	const UnitStatList& getStatList() const{
+	bool isDead() const {
+		return getNumber() == 0;
+	}
+
+	const UnitStatList& getStatList() const {
 		return stat;
 	}
-	int getStat(uint16_t n) const {
-		return stat.get(n);
+	const UnitSkill& getSkill(size_t number) const {
+		return Data::get()->unitSkill[base->skill[number]];
 	}
 	const std::vector<StatusEffect>& getStatus() const {
 		return status;
 	}
 
-	bool isDead() const {
-		return size == 0;
+///////////////
+// FUNCTIONS //
+///////////////
+
+	void endFirstTurn() {
+		firstTurn = false;
 	}
 
-	void wait();
-	void updateTimer(uint64_t timer);
-	void updateHP();
-	void recountStats();
+	void updateHealth();
+
+	void resetStats();
+	void recountVarStats(); // Health, Mana etc.
+	void recountStaticStats();
+
+	void updateTimer();
 	void startTurn();
 	void endTurn();
 
-	void applyStatusEffect(StatusEffect&& effect);
-	void useSkill(uint16_t skillNumber, BattleUnitStack& target);
+	void addStatusEffect(StatusEffect&& effect);
+	void useSkill(const UnitSkill& skill, BattleUnitStack& target, const std::vector<std::string>& reactionTrait);
 	
 };
 

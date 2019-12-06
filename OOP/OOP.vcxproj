@@ -123,13 +123,17 @@
     <ClCompile Include="DataTemplate.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Constants.cpp" />
+    <ClCompile Include="UnitTrait.cpp" />
     <ClCompile Include="UnitStack.cpp" />
-    <ClCompile Include="UnitStat.cpp" />
+    <ClCompile Include="UnitStatData.cpp" />
+    <ClCompile Include="UnitStatList.cpp" />
     <ClCompile Include="UnitStatFormula.cpp" />
+    <ClCompile Include="UnitStatModifier.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
-    <ClInclude Include="Printer.h" />
+    <ClInclude Include="DebugPrinter.h" />
+    <ClInclude Include="UnitReaction.h" />
     <ClInclude Include="UnitSkill.h" />
     <ClInclude Include="Army.h" />
     <ClInclude Include="Battle.h" />
@@ -138,12 +142,23 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="DataTemplate.h" />
-    <ClInclude Include="StatusEffect.h" />
+    <ClInclude Include="UnitStatusEffect.h" />
     <ClInclude Include="Unit.h" />
     <ClInclude Include="UnitStat.h" />
+    <ClInclude Include="UnitStatData.h" />
+    <ClInclude Include="UnitStatList.h" />
     <ClInclude Include="UnitStatModifier.h" />
     <ClInclude Include="UnitStack.h" />
     <ClInclude Include="UnitStatFormula.h" />
+    <ClInclude Include="UnitTrait.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Data\Constants.txt" />
+    <Text Include="Data\Unit.txt" />
+    <Text Include="Data\UnitSkill.txt" />
+    <Text Include="Data\UnitStat.txt" />
+    <Text Include="Data\UnitStatModifier.txt" />
+    <Text Include="Data\UnitTrait.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

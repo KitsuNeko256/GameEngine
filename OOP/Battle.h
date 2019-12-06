@@ -5,7 +5,7 @@
 class Battle {
 private:
 	std::vector<BattleArmy> army;
-	std::vector<BattleUnitStack*> unitOrder;
+	std::vector<BattleUnitStack*> turnQueue;
 	uint64_t battleTimer;
 
 public:
@@ -18,18 +18,21 @@ public:
 		return army[number];
 	}
 
-	uint16_t getTurnArmy() {
-		return unitOrder[0]->getArmy();
+	size_t getTurnArmy() {
+		return turnQueue[0]->getArmy();
 	}
 	BattleUnitStack* getTurnUnit() {
-		return unitOrder[0];
+		return turnQueue[0];
 	}
-	std::vector <BattleUnitStack*> getTurnOrder() {
-		return unitOrder;
+	const std::vector <BattleUnitStack*>& getTurnOrder() const {
+		return turnQueue;
 	}
 	std::string getStatus() const;
+	const uint64_t& getTimer() const {
+		return battleTimer;
+	}
 
-	void unitAction(std::string& action);
+	void unitAction(BattleUnitStack& user, const UnitSkill& skill);
 	void armySurrender();
 
 	void startTurn();
