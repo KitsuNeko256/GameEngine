@@ -40,6 +40,9 @@
     <Filter Include="Исходные файлы\Unit">
       <UniqueIdentifier>{0d2ced59-dd8a-4521-99a2-00f0457f110b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы заголовков\Unit\Skill">
+      <UniqueIdentifier>{8f6c3bd1-da63-4607-9ee0-3dc2012b8af7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -72,9 +75,6 @@
     <ClCompile Include="DataTemplate.cpp">
       <Filter>Исходные файлы\Data</Filter>
     </ClCompile>
-    <ClCompile Include="UnitStatModifier.cpp">
-      <Filter>Исходные файлы\Unit</Filter>
-    </ClCompile>
     <ClCompile Include="UnitStatList.cpp">
       <Filter>Исходные файлы\Unit</Filter>
     </ClCompile>
@@ -82,6 +82,9 @@
       <Filter>Исходные файлы\Data</Filter>
     </ClCompile>
     <ClCompile Include="UnitTrait.cpp">
+      <Filter>Исходные файлы\Unit</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitStatModifier.cpp">
       <Filter>Исходные файлы\Unit</Filter>
     </ClCompile>
   </ItemGroup>
@@ -104,20 +107,11 @@
     <ClInclude Include="common.h">
       <Filter>Файлы заголовков\Common</Filter>
     </ClInclude>
-    <ClInclude Include="UnitStatFormula.h">
-      <Filter>Файлы заголовков\Unit</Filter>
-    </ClInclude>
-    <ClInclude Include="UnitStatModifier.h">
-      <Filter>Файлы заголовков\Unit</Filter>
-    </ClInclude>
     <ClInclude Include="Data.h">
       <Filter>Файлы заголовков\Data</Filter>
     </ClInclude>
     <ClInclude Include="DataTemplate.h">
       <Filter>Файлы заголовков\Data</Filter>
-    </ClInclude>
-    <ClInclude Include="UnitSkill.h">
-      <Filter>Файлы заголовков\Unit</Filter>
     </ClInclude>
     <ClInclude Include="Constants.h">
       <Filter>Файлы заголовков\Data</Filter>
@@ -126,9 +120,6 @@
       <Filter>Файлы заголовков\Unit</Filter>
     </ClInclude>
     <ClInclude Include="UnitStat.h">
-      <Filter>Файлы заголовков\Unit</Filter>
-    </ClInclude>
-    <ClInclude Include="UnitStatList.h">
       <Filter>Файлы заголовков\Unit</Filter>
     </ClInclude>
     <ClInclude Include="UnitStatData.h">
@@ -140,18 +131,27 @@
     <ClInclude Include="Unit.h">
       <Filter>Файлы заголовков\Unit</Filter>
     </ClInclude>
-    <ClInclude Include="UnitStatusEffect.h">
+    <ClInclude Include="UnitTrait.h">
       <Filter>Файлы заголовков\Unit</Filter>
     </ClInclude>
-    <ClInclude Include="UnitTrait.h">
+    <ClInclude Include="UnitSkill.h">
+      <Filter>Файлы заголовков\Unit\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitStatFormula.h">
+      <Filter>Файлы заголовков\Unit\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitStatModifier.h">
+      <Filter>Файлы заголовков\Unit\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitStatusEffect.h">
+      <Filter>Файлы заголовков\Unit\Skill</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitStatList.h">
       <Filter>Файлы заголовков\Unit</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Data\UnitStat.txt">
-      <Filter>Файлы ресурсов</Filter>
-    </Text>
-    <Text Include="Data\UnitStatModifier.txt">
       <Filter>Файлы ресурсов</Filter>
     </Text>
     <Text Include="Data\Constants.txt">

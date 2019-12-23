@@ -53,7 +53,7 @@ public:
 		return stat.get(Data::get()->unitStat.getIndex("Number"));
 	}
 	bool isDead() const {
-		return getNumber() == 0;
+		return getNumber() <= 0;
 	}
 
 	const UnitStatList& getStatList() const {

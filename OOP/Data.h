@@ -4,7 +4,6 @@
 #include "DataTemplate.h"
 #include "UnitStatData.h"
 #include "UnitTrait.h"
-#include "UnitStatModifier.h"
 #include "UnitSkill.h"
 #include "Unit.h"
 
@@ -19,7 +18,6 @@ public:
 
 	UnitStatData unitStat;
 	DataTemplate<UnitTrait> unitTrait;
-	DataTemplate<UnitStatModifier> unitStatModifier;
 	DataTemplate<UnitSkill> unitSkill;
 	DataTemplate<Unit> unit;
 

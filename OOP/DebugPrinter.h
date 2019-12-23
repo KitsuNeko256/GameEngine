@@ -8,10 +8,10 @@
 
 std::string print(const UnitStat& t) {
 	std::string ans = "ID: " + std::to_string(Data::get()->unitStat.getIndex(t.name)) +
-		" Name: " + t.name + " Type: ";
+		" | Name: " + t.name + " | Type: ";
 	ans += t.type;
-	ans += " Min: " + std::to_string(t.min) +
-		" Max: " + std::to_string(t.max);
+	ans += "| Min: " + std::to_string(t.min) +
+		" | Max: " + std::to_string(t.max);
 	return ans;
 }
 std::string print(const UnitStatList& t) {
@@ -26,37 +26,33 @@ std::string print(const UnitStatList& t) {
 	return ans;
 }
 
-/*
 std::string print(const UnitStatFormula& t) {
-	std::string ans = std::to_string(t.stat) + " ";
-	ans += t.action;
-	ans += " :";
+	std::string ans;
 	for (uint16_t i = 0; i < t.expr.size(); ++i)
 		ans += " " + t.expr[i];
 	return ans;
 }
-*/
 std::string print(const UnitStatModifier& t) {
-	std::string ans = "ID: " + std::to_string(Data::get()->unitStatModifier.getIndex(t.name)) +
-		" Name: " + t.name + " Prioirity: " + std::to_string(t.priority) + "\n";
-//	for (uint16_t i = 0; i < t.effect.size(); ++i)
-//		ans += print(t.effect[i]) + "\n";
+	std::string ans = "Prioirity: " + std::to_string(t.priority) +
+		" | Duration:  " + std::to_string(t.duration) + " | Target: ";
+	if (t.target == 'u')
+		ans += "user";
+	else if (t.target == 't')
+		ans += "target";
+	ans += " | Stat: " + Data::get()->unitStat[t.statID].name + " ";
+	ans += t.statOperator;
 	return ans;
 }
 std::string print(const UnitSkill& t) {
 	std::string ans = "ID: " + std::to_string(Data::get()->unitSkill.getIndex(t.name)) +
-		" Name: " + t.name + "\n";
-	for (uint16_t i = 0; i < t.effect.size(); ++i) {
-		ans += "ID: " + std::to_string(t.effect[i].ID) +
-			" Target: " + t.effect[i].target +
-			" Duration: " + std::to_string((int)t.effect[i].duration) + "\n";
-	}
+		" | Name: " + t.name + "  ";
+	ans += t.targeting;
 	return ans;
 }
 
 std::string print(const Unit& t) {
 	std::string ans = "ID: " + std::to_string(Data::get()->unit.getIndex(t.name)) + 
-		" Name: " + t.name + "\n";
+		"| Name: " + t.name + "\n";
 	ans += print(t.stat);
 	ans += "Skills: ";
 	for (uint16_t i = 0; i < t.skill.size(); ++i)
@@ -122,14 +118,11 @@ std::string print(const UnitStatData& t) {
 
 
 
-
+//NOT UPDATED
 void dataTestInfo() {
 
 	std::cout << "Unit Stat List:\n";
 	std::cout << print(Data::get()->unitStat);
-	std::cout << std::endl;
-	std::cout << "Unit Stat Modifier List:\n";
-	std::cout << print(Data::get()->unitStatModifier);
 	std::cout << std::endl;
 	std::cout << "Unit Skill List:\n";
 	std::cout << print(Data::get()->unitSkill);

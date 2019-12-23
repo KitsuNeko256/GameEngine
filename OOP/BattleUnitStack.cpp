@@ -1,6 +1,7 @@
 #include "BattleUnitStack.h"
 
 #include <algorithm>
+#include <iostream>
 
 #include "Constants.h"
 
@@ -14,36 +15,6 @@ BattleUnitStack::BattleUnitStack(const UnitStack& t, size_t _army, const uint64_
 	stat.set(Data::get()->unitStat.getIndex("Max Number"), t.getNumber());
 }
 
-void BattleUnitStack::updateHealth() {
-	const UnitStatData& data = Data::get()->unitStat;
-	size_t HealthID = data.getIndex("Health");
-	size_t NumberID = data.getIndex("Number");
-	int maxHealth = stat.get(data.getIndex("Max Health"));
-	int maxNumber = stat.get(data.getIndex("Max Number"));
-	int Health = stat.get(HealthID);
-	int Number = stat.get(NumberID);
-
-	if (Health > maxHealth) {
-		if (Health / maxHealth > maxNumber - Number) {
-			stat.set(NumberID, maxNumber);
-			stat.set(HealthID, maxHealth);
-		}
-		else {
-			stat.shift(NumberID, Health / maxHealth);
-			stat.set(HealthID, Health % maxHealth);
-		}
-	}
-	else if (Health < 0) {
-		Health *= -1;
-		if (Health / maxHealth >= Number - 1) {
-			stat.set(NumberID, 0);
-		}
-		else {
-			stat.shift(NumberID, -1 - Health / maxHealth);
-			stat.set(HealthID, maxHealth - (Health % maxHealth));
-		}
-	}
-}
 
 
 void BattleUnitStack::resetStats() {
@@ -59,26 +30,15 @@ void BattleUnitStack::resetStats() {
 	}
 }
 void BattleUnitStack::recountVarStats() {
-	for (uint16_t i = 0; i < status.size(); ++i) {
-		std::vector<StatusEffect::Effect> effect = status[i].getEffect();
-		for (uint16_t j = 0; j < effect.size(); ++j) {
-			if (Data::get()->unitStat.isFirstVar(effect[j].statID))
-				stat.change(effect[j].statID, effect[j].value, effect[j].action);
-		}
-	}
-	stat.set(Data::get()->unitStat.getIndex("Retaliate Count"), stat.get(Data::get()->unitStat.getIndex("Max Retaliate Count")));
-	updateHealth();
+	for (uint16_t i = 0; i < status.size(); ++i)
+		if (Data::get()->unitStat.isFirstVar(status[i].getStatID()))
+			stat.change(status[i].getStatID(), status[i].getValue(), status[i].getStatOperator());
 }
 void BattleUnitStack::recountStaticStats() {
 	resetStats();
-
-	for (uint16_t i = 0; i < status.size(); ++i) {
-		std::vector<StatusEffect::Effect> effect = status[i].getEffect();
-		for (uint16_t j = 0; j < effect.size(); ++j) {
-			if (!Data::get()->unitStat.isFirstVar(effect[j].statID))
-				stat.change(effect[j].statID, effect[j].value, effect[j].action);
-		}
-	}
+	for (uint16_t i = 0; i < status.size(); ++i)
+		if (!Data::get()->unitStat.isFirstVar(status[i].getStatID()))
+			stat.change(status[i].getStatID(), status[i].getValue(), status[i].getStatOperator());
 }
 
 void BattleUnitStack::updateTimer() {
@@ -96,6 +56,15 @@ void BattleUnitStack::startTurn() {
 		else ++i;
 	}
 	recountStaticStats();
+
+
+	{
+		const std::vector<uint16_t>& react = getBase()->reaction.everyInteraction;
+		for (uint16_t i = 0; i < react.size(); ++i) {
+			useSkill(Data::get()->unitSkill[react[i]], *this, std::vector<std::string>());
+//			std::cout << "Activated " << Data::get()->unitSkill[react[i]].name << " as every interaction effect!\n";
+		}
+	}
 }
 void BattleUnitStack::endTurn() {
 	recountStaticStats();
@@ -111,31 +80,57 @@ void BattleUnitStack::addStatusEffect(StatusEffect&& effect) {
 		status.insert(++it, effect);
 	else status.emplace_back(effect);
 
-	if (effect.ended()) {
-		const std::vector<StatusEffect::Effect>& t = effect.getEffect();
-		for (uint16_t i = 0; i < t.size(); ++i)
-			if (Data::get()->unitStat.isFirstVar(t[i].statID))
-				stat.change(t[i].statID, t[i].value, t[i].action);
-	}
+	if (effect.ended())
+		if (Data::get()->unitStat.isFirstVar(effect.getStatID()))
+			stat.change(effect.getStatID(), effect.getValue(), effect.getStatOperator());
 
-	updateHealth();
 	recountStaticStats();
 }
 void BattleUnitStack::useSkill(const UnitSkill& skill, BattleUnitStack& target, const std::vector<std::string>& reactionTrait) {
-	for (uint16_t i = 0; i < skill.effect.size(); ++i) {
-		const UnitStatModifier modifier = Data::get()->unitStatModifier[skill.effect[i].ID];
-		const std::vector<const UnitStatFormula*> formula = modifier.effect->get(stat, target.stat, reactionTrait);
-		std::vector<StatusEffect::Effect> effect;
-		for (uint16_t j = 0; j < formula.size(); ++j)
-			effect.emplace_back(formula[j]->statIndex, formula[j]->action, formula[j]->count(stat, target.stat, reactionTrait));
-		if (effect.size() > 0) {
-			if (skill.effect[i].target == 'u')
-				addStatusEffect(StatusEffect(modifier.name, modifier.priority, skill.effect[i].duration, effect));
-			if (skill.effect[i].target == 't')
-				target.addStatusEffect(StatusEffect(modifier.name, modifier.priority, skill.effect[i].duration, effect));
+	const std::vector<const UnitStatModifier*> effect = skill.effect->get(stat, target.stat, reactionTrait);
+	if (effect.size() == 0) {
+		if (!skill.hasTrait("SYSTEM"))
+			std::cout << "It fails!\n";
+		return;
+	}
+
+	for (uint16_t i = 0; i < effect.size(); ++i) {
+		std::string output = " " + Data::get()->unitStat[effect[i]->statID].name + " got ";
+		switch (effect[i]->statOperator) {
+		case '+':
+			output += "increased by ";
+			break;
+		case '-':
+			output += "decreased by ";
+			break;
+		case '*':
+			output += "multiplied by ";
+			break;
+		case '/':
+			output += "divided by ";
+			break;
+		case '=':
+			output += "set to ";
+			break;
 		}
+
+		if(effect[i]->statOperator == '*' || effect[i]->statOperator == '/')
+			output += std::to_string(effect[i]->formula.count(stat, target.stat, reactionTrait)) + "!";
+		else
+			output += std::to_string((int)effect[i]->formula.count(stat, target.stat, reactionTrait)) + "!";
+		if (effect[i]->target == 'u') {
+			addStatusEffect(StatusEffect(skill.name, *effect[i], effect[i]->formula.count(stat, target.stat, reactionTrait)));
+			output = getName() + output; 
+		}
+		else if (effect[i]->target == 't') {
+			target.addStatusEffect(StatusEffect(skill.name, *effect[i], effect[i]->formula.count(stat, target.stat, reactionTrait)));
+			output = target.getName() + output;
+		}
+		if (effect[i]->printable)
+			std::cout << output << "\n";
 	}
 	updateTimer();
+	
 	for (uint16_t i = 0; i < status.size();) {
 		if (status[i].ended())
 			status.erase(status.begin() + i);
@@ -151,6 +146,23 @@ void BattleUnitStack::useSkill(const UnitSkill& skill, BattleUnitStack& target, 
 			else ++i;
 		}
 		target.recountStaticStats();
+	}
+
+	if (!skill.hasTrait("SYSTEM")) {
+		{
+			const std::vector<uint16_t>& react = getBase()->reaction.everyInteraction;
+			for (uint16_t i = 0; i < react.size(); ++i) {
+				useSkill(Data::get()->unitSkill[react[i]], *this, skill.trait);
+//				std::cout << "Activated " << Data::get()->unitSkill[react[i]].name << " as every interaction effect!\n";
+			}
+		}
+		if(&target != this){
+			const std::vector<uint16_t>& react = target.getBase()->reaction.everyInteraction;
+			for (uint16_t i = 0; i < react.size(); ++i) {
+				target.useSkill(Data::get()->unitSkill[react[i]], target, skill.trait);
+//				std::cout << "Activated " << Data::get()->unitSkill[react[i]].name << " as every interaction effect!\n";
+			}
+		}
 	}
 }
 

@@ -18,8 +18,14 @@ Wait
 
 [REACTION]
 
+{EVERY_INTERACTION}
+Update_Health
+
+{EVERY_TURN}
+Update_Retaliate_Counter
+
 {ON_DEFEND}
-Retaliate
+Melee_Retaliate
 
 [END]
 
@@ -42,8 +48,14 @@ Wait
 
 [REACTION]
 
+{EVERY_INTERACTION}
+Update_Health
+
+{EVERY_TURN}
+Update_Retaliate_Counter
+
 {ON_DEFEND}
-Retaliate
+Melee_Retaliate
 
 [END]
 
@@ -67,8 +79,14 @@ Wait
 
 [REACTION]
 
+{EVERY_INTERACTION}
+Update_Health
+
+{EVERY_TURN}
+Update_Retaliate_Counter
+
 {ON_DEFEND}
-Retaliate
+Melee_Retaliate
 
 [END]
 
@@ -83,6 +101,7 @@ Retaliate_Count 1 1
 
 [TRAIT]
 Retaliates_Melee
+Retaliates_Ranged
 
 [SKILL]
 Ranged_Attack
@@ -93,8 +112,15 @@ Wait
 
 [REACTION]
 
+{EVERY_INTERACTION}
+Update_Health
+
+{EVERY_TURN}
+Update_Retaliate_Counter
+
 {ON_DEFEND}
-Retaliate
+Melee_Retaliate
+Ranged_Retaliate
 
 [END]
 
@@ -117,8 +143,14 @@ Wait
 
 [REACTION]
 
+{EVERY_INTERACTION}
+Update_Health
+
+{EVERY_TURN}
+Update_Retaliate_Counter
+
 {ON_DEFEND}
-Retaliate
+Melee_Retaliate
 
 [END]
 
@@ -142,8 +174,14 @@ Armor_Break
 
 [REACTION]
 
+{EVERY_INTERACTION}
+Update_Health
+
+{EVERY_TURN}
+Update_Retaliate_Counter
+
 {ON_DEFEND}
-Retaliate
+Melee_Retaliate
 
 [END]
 Devil 
@@ -166,7 +204,13 @@ Wait
 
 [REACTION]
 
+{EVERY_INTERACTION}
+Update_Health
+
+{EVERY_TURN}
+Update_Retaliate_Counter
+
 {ON_DEFEND}
-Retaliate
+Melee_Retaliate
 
 [END]

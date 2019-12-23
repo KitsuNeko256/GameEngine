@@ -7,50 +7,6 @@
 #include "common.h"
 #include "Data.h"
 
-template<>
-void DataTemplate<UnitTrait>::loadFromFile(const std::string& fileName) {
-	std::ifstream fin(fileName);
-	if (fin.good()) {
-		size_t IDCounter = getSize();
-		std::string input;
-		bool end = 1;
-		while (!fin.eof()) {
-			fin >> input;
-			removeUnderscore(input); 
-			if (end) {
-				index[input] = IDCounter++;
-				end = 0;
-			}
-			else if (input == "[END]")
-				end = 1;
-		}
-	}
-	fin.close();
-	fin.open(fileName);
-	if (fin.good()) {
-		while (!fin.eof())
-			val.emplace_back(loadSingleInstance(fin));
-	}
-	fin.close();
-
-}
-template<>
-UnitTrait DataTemplate<UnitTrait>::loadSingleInstance(std::ifstream& fin) {
-	std::string name;
-	std::set<size_t> child;
-
-	fin >> name;
-	removeUnderscore(name);
-
-	std::string input;
-	fin >> input;
-	while (input != "[END]") {
-		child.insert(getIndex(input));
-		fin >> input;
-	}
-	
-	return UnitTrait(name, child);
-}
 
 inline int operPriority(char c) {
 	if (c == '|')
@@ -68,7 +24,7 @@ inline int operPriority(char c) {
 	return -1;
 }
 
-std::vector<std::string> loadUnitStatExpr(std::ifstream& fin) {
+std::vector<std::string> loadFormula(std::ifstream& fin) {
 	std::vector<std::string> expr;
 	std::stack<std::string> oper;
 
@@ -110,71 +66,39 @@ std::vector<std::string> loadUnitStatExpr(std::ifstream& fin) {
 	return expr;
 }
 
-template<>
-UnitStatModifier DataTemplate<UnitStatModifier>::loadSingleInstance(std::ifstream& fin) {
-	std::string name;
+UnitStatModifier loadUnitStatModifier(std::ifstream& fin, char targeting = '0') {
+	char target;
+	std::string statName;
+	char statOperator;
+
 	uint16_t priority;
-	std::stack<UnitStatFormulaNode*> effect;
-	effect.push(new UnitStatFormulaNode());
+	uint16_t duration;
 
-	fin >> name >> priority;
-	removeUnderscore(name);
+	char printable;
 
-	std::string input;
-	fin >> input;
-	while (input != "[END]") {
-		if (input == "[IF]") {
-			UnitStatFormulaNode* node = new UnitStatFormulaNode();
-			effect.top()->child.emplace_back(std::make_tuple(UnitStatFormula(0, 0, loadUnitStatExpr(fin)), node, nullptr));
-			effect.push(node);
-		}
-		else if (input == "[ELSE]") {
-			effect.pop();
-			UnitStatFormulaNode* node = new UnitStatFormulaNode();
-			std::get<2>(effect.top()->child[effect.top()->child.size() - 1]) = node;
-			effect.push(node);
-		}
-		else if (input == "[FI]") {
-			effect.pop();
-		}
-		else {
-			char action;
-			fin  >> action;
-			removeUnderscore(input);
-			effect.top()->value.emplace_back(Data::get()->unitStat.getIndex(input), action, loadUnitStatExpr(fin));
-		}
-		fin >> input;
-	}
-	while (effect.size() > 1) effect.pop();
-	return UnitStatModifier(name, priority, effect.top());
+	fin >> printable >> priority >> duration >> target >> statName >> statOperator;
+	removeUnderscore(statName);
+
+	return UnitStatModifier(target, Data::get()->unitStat.getIndex(statName), statOperator, printable == 'p' ? 1 : 0, priority, duration, loadFormula(fin));
 }
-
+	
 template<>
 UnitSkill DataTemplate<UnitSkill>::loadSingleInstance(std::ifstream& fin) {
 	std::string name;
-	char target;
-	std::vector<UnitSkill::Effect> effect;
+	char targeting;
+	std::stack<UnitStatModifierNode*> effect;
 	std::vector<std::string> trait;
 
-	fin >> name >> target;
+	fin >> name >> targeting;
 	removeUnderscore(name);
+
+	effect.push(new UnitStatModifierNode());
 
 	std::string input;
 	fin >> input;
 
 	while (input != "[END]") {
-		if (input == "[EFFECT]")
-			while (true) {
-				fin >> input;
-				if (input[0] == '[')
-					break;
-				removeUnderscore(input);
-				char target;
-				uint16_t duration;
-				fin >> target >> duration;
-				effect.push_back(UnitSkill::Effect(Data::get()->unitStatModifier.getIndex(input), target, duration));
-			}
-		else if (input == "[TRAIT]")
+		if (input == "[TRAIT]")
 			while (true) {
 				fin >> input;
 				if (input[0] == '[')
@@ -182,9 +106,82 @@ UnitSkill DataTemplate<UnitSkill>::loadSingleInstance(std::ifstream& fin) {
 				removeUnderscore(input);
 				trait.push_back(input);
 			}
+		else if (input == "[EFFECT]")
+			while (true) {
+				fin >> input;
+				if (input == "[IF]") {
+					UnitStatModifierNode* node = new UnitStatModifierNode();
+					effect.top()->child.emplace_back(std::make_tuple(loadFormula(fin), node, nullptr));
+					effect.top()->order.push_back('c');
+					effect.push(node);
+				}
+				else if (input == "[ELSE]") {
+					effect.pop();
+					UnitStatModifierNode* node = new UnitStatModifierNode();
+					std::get<2>(effect.top()->child[effect.top()->child.size() - 1]) = node;
+					effect.push(node);
+				}
+				else if (input == "[FI]") {
+					effect.pop();
+				}
+				else if (input[0] == '[')
+					break;
+				else {
+					fin.unget();
+					effect.top()->value.push_back(loadUnitStatModifier(fin));
+					effect.top()->order.push_back('v');
+				}
+			}
 	}
 
-	return UnitSkill(name, target, effect, trait);
+	while (effect.size() > 1) effect.pop();
+
+	return UnitSkill(name, targeting, trait, effect.top());
+}
+
+template<>
+void DataTemplate<UnitTrait>::loadFromFile(const std::string& fileName) {
+	std::ifstream fin(fileName);
+	if (fin.good()) {
+		size_t IDCounter = getSize();
+		std::string input;
+		bool end = 1;
+		while (!fin.eof()) {
+			fin >> input;
+			removeUnderscore(input);
+			if (end) {
+				index[input] = IDCounter++;
+				end = 0;
+			}
+			else if (input == "[END]")
+				end = 1;
+		}
+	}
+	fin.close();
+	fin.open(fileName);
+	if (fin.good()) {
+		while (!fin.eof())
+			val.emplace_back(loadSingleInstance(fin));
+	}
+	fin.close();
+
+}
+template<>
+UnitTrait DataTemplate<UnitTrait>::loadSingleInstance(std::ifstream& fin) {
+	std::string name;
+	std::set<size_t> child;
+
+	fin >> name;
+	removeUnderscore(name);
+
+	std::string input;
+	fin >> input;
+	while (input != "[END]") {
+		child.insert(getIndex(input));
+		fin >> input;
+	}
+
+	return UnitTrait(name, child);
 }
 
 template<>
@@ -243,7 +240,9 @@ Unit DataTemplate<Unit>::loadSingleInstance(std::ifstream& fin) {
 				if (input[0] == '[')
 					break;
 				removeUnderscore(input);
-				if (input == "{FIRST TURN}")
+				if (input == "{EVERY INTERACTION}")
+					curVector = &reaction.everyInteraction;
+				else if (input == "{FIRST TURN}")
 					curVector = &reaction.firstTurn;
 				else if (input == "{EVERY TURN}")
 					curVector = &reaction.everyTurn;

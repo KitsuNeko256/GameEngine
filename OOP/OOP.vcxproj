@@ -157,7 +157,6 @@
     <Text Include="Data\Unit.txt" />
     <Text Include="Data\UnitSkill.txt" />
     <Text Include="Data\UnitStat.txt" />
-    <Text Include="Data\UnitStatModifier.txt" />
     <Text Include="Data\UnitTrait.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -17,7 +17,7 @@ public:
 		return val[index];
 	}
 	const T& operator[](const std::string& name) const{
-		return val[index[name]];
+		return index.find(name) == index.end() ? val[0] : val[index.at(name)];
 	}
 
 	size_t getIndex(const std::string& name) const {
@@ -25,6 +25,12 @@ public:
 	}
 	size_t getSize() const {
 		return val.size();
+	}
+	std::string printNameList() {
+		std::string ans;
+		for (std::map<std::string, size_t>::iterator it = index.begin(); it != index.end(); ++it)
+			ans += it->first + "\n";
+		return ans;
 	}
 
 	T loadSingleInstance(std::ifstream& fin);

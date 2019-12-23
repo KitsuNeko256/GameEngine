@@ -11,6 +11,7 @@ private:
 	std::vector<UnitStack> stack;
 
 public:
+	Army() {}
 	Army(const std::vector<UnitStack>& _stack);
 
 	int getSize() const {

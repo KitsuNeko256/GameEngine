@@ -2,26 +2,16 @@
 
 #include "UnitStatModifier.h"
 
-
-
-class UnitSkill {
-public:
+struct UnitSkill {
 	const std::string name;
-	const char target;
+	const char targeting;
 	const std::vector<std::string> trait;
 	
-	struct Effect {
-		uint16_t ID;
-		char target;
-		uint16_t duration;
-		Effect(uint16_t _ID, char _target, uint16_t _duration) :
-			ID(_ID), target(_target), duration(_duration) {}
-	};
-	const std::vector<Effect> effect;
+	const UnitStatModifierNode* effect;
 	
-	UnitSkill() : name("NULL"), target(' ') {}
-	UnitSkill(const std::string& _name, char _target, const std::vector<Effect>& _effect, const std::vector<std::string>& _trait) :
-		name(_name), target(_target), effect(_effect), trait(_trait) {}
+	UnitSkill() : name("NULL"), targeting(' ') {}
+	UnitSkill(const std::string& _name, char _targeting, const std::vector<std::string>& _trait, const UnitStatModifierNode* _effect) :
+		name(_name), targeting(_targeting), trait(_trait), effect(_effect) {}
 
 	bool hasTrait(std::string traitName) const {
 		for (size_t i = 0; i < trait.size(); ++i)

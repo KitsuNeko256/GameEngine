@@ -9,6 +9,7 @@ private:
 	uint64_t battleTimer;
 
 public:
+	Battle(const std::vector<Army>& _army);
 	Battle(const std::vector<BattleArmy>& _army);
 
 	size_t getArmySize() const {
@@ -32,7 +33,7 @@ public:
 		return battleTimer;
 	}
 
-	void unitAction(BattleUnitStack& user, const UnitSkill& skill);
+	bool unitAction(BattleUnitStack& user, const UnitSkill& skill);
 	void armySurrender();
 
 	void startTurn();
